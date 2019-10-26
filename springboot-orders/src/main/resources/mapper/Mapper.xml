@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.niuxiaofei.dao.OrderMapper">
+    <!--展示列表分页查询-->
+    <select id="list" resultType="com.niuxiaofei.entity.Order">
+        select a.*,b.username userName from t_order a left join users b on a.user_id=b.id
+        <where>
+            <if test="id!=null and id!=''">
+              a.id=#{id}
+            </if>
+            <if test="startPrice!=null and startPrice!=''">
+              and #{startPrice} &lt;=a.total_price
+            </if>
+            <if test="endPrice!=null and endPrice!=''">
+                and #{endPrice} >=a.total_price
+            </if>
+            <if test="user_id!=0">
+              and a.user_id=#{user_id}
+            </if>
+        </where>
+    </select>
+    <!--添加订单返回订单号-->
+    <insert id="saveOrder" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into t_order set user_id=#{user_id},total_price=#{total_price},create_time=now()
+    </insert>
+    <!--添加订单详情-->
+    <insert id="save">
+        insert into order_info set order_id=#{order_id},product_id=#{product.id},price=#{product.price},num=#{product.num},total_price=#{product.num}*#{product.price}
+    </insert>
+</mapper>
